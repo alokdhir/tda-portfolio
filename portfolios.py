@@ -35,6 +35,7 @@ assert r.status_code == 200, r.raise_for_status()
 console = Console()
 table = Table(show_header=True, header_style="yellow")
 table.add_column("Account#")
+table.add_column("", justify="right")
 table.add_column("")
 table.add_column("", justify="right")
 table.add_column("Value", justify="right", width=10)
@@ -83,15 +84,13 @@ for idx, i in enumerate(r.json()):
                     '[bold green]' + "{:.2f}".format(bpow) + '[/bold green]', end_section=True)
             #sym exp daych, pnl, quan price cost mval
 
-    table.add_row("symbol", "exp", "day change (%)", "p/l", "quantity", "price", "cost", "market val", end_section=True, style="yellow")
+    table.add_row("symbol", "u/l", "exp", "day change (%)", "p/l", "quantity", "price", "cost", "market val", end_section=True, style="yellow")
 
     daytotal = 0
     pltotal = 0
 
     #for pidx, p in enumerate(positions):
     for pidx, p in enumerate(sorted(positions, key = lambda x: x['currentDayProfitLossPercentage'], reverse=True)):
-
-        fdt = ""
 
         symcolor = "bold blue"
         inst = p['instrument']
@@ -113,14 +112,32 @@ for idx, i in enumerate(r.json()):
             symparts = sym.split('_')
             dt = symparts[1][0:6]
             strike = symparts[1][6:]
-            sym = symparts[0]
+            symbol = symparts[0]
 
             #fix/format the date portion
             dobj = datetime.strptime(dt, '%m%d%y')
-            sym = symparts[0] + ' ' + strike[1:] + strike[0]
             fdt = dobj.strftime('%Y %b %d')
 
             symcolor = "bold cyan"
+
+            #underlying
+            r = c.get_quote(symbol)
+            assert r.status_code == 200, r.raise_for_status()
+            d = r.json()
+            symkey = next(iter(d))
+            underd = d[symkey]
+
+            sym = symbol + ' ' + strike[1:] + strike[0]
+            sp = float(strike[1:])
+            if sp < underd['mark']:
+                ulcolor = "green"
+            else:
+                ulcolor = "red"
+            ulS = "[" + ulcolor + "]" + "{:.2f}".format(underd['mark']) + "[/" + ulcolor + "]"
+
+        else:
+            ulS = ""
+            fdt = ""
 
         pnl = val - cost
 
@@ -147,20 +164,21 @@ for idx, i in enumerate(r.json()):
         else:
            plcolor = "bold red"
 
-
         pnlS = "[" + pcolor + "]" + "{:,.2f}".format(pnl) + "[/" + pcolor + "]"
         dayplS = "[" + dcolor + "]" + "{:,.2f}".format(daypl) + " (" + "{:.0%}".format(dayplpct/100) + ")"+ "[/" + dcolor + "]"
-
+        
+        #end section if we are on last symbol
         pendrow = False
         if pidx >= (len(positions) - 1):
             pendrow= True
-        
-        table.add_row('[' + symcolor+ ']' + sym + '[/' + symcolor+ ']', fdt, dayplS, pnlS, "{:,.2f}".format(q), "{:,.2f}".format(price), "{:,.2f}".format(cost), "{:,.2f}".format(val), end_section=pendrow)
 
+        table.add_row('[' + symcolor+ ']' + sym + '[/' + symcolor+ ']', ulS, fdt, dayplS, pnlS, "{:,.2f}".format(q), "{:,.2f}".format(price), "{:,.2f}".format(cost), "{:,.2f}".format(val), end_section=pendrow)
+
+        #update totals
         daytotalS = '[' + dtcolor+ ']' + "{:,.2f}".format(daytotal) + '[/' + dtcolor+ ']'
         pltotalS = '[' + plcolor+ ']' + "{:,.2f}".format(pltotal) + '[/' + plcolor+ ']'
 
-table.add_row("     TOTAL", "", daytotalS, pltotalS, "", "", "", "[bold]" + "{:,.2f}".format(total) + "[/bold]")
+table.add_row("     TOTAL", "", "", daytotalS, pltotalS, "", "", "", "[bold]" + "{:,.2f}".format(total) + "[/bold]")
 
 console.print(table)
 

@@ -8,7 +8,9 @@ import json
 import sys
 
 config = configparser.ConfigParser()
-config.read('config.ini')
+confdir = os.path.dirname(os.path.realpath(__file__))
+
+config.read(confdir + '/config.ini')
 
 token_path = config.get('secrets', 'token_path')
 api_key = config.get('secrets', 'api_key')
