@@ -15,6 +15,7 @@ confdir = os.path.dirname(os.path.realpath(__file__))
 
 config.read(confdir + '/config.ini')
 
+#td api access
 token_path = config.get('secrets', 'token_path')
 api_key = config.get('secrets', 'api_key')
 redirect_uri = 'http://localhost'
@@ -26,8 +27,8 @@ except FileNotFoundError:
     with webdriver.Chrome() as driver:
         c = auth.client_from_login_flow(
             driver, api_key, redirect_uri, token_path)
+#logged in! if not, you've been dissed
 
-#r = c.get_accounts()
 r = c.get_accounts(fields=c.Account.Fields.POSITIONS)
 
 assert r.status_code == 200, r.raise_for_status()
@@ -108,6 +109,7 @@ for idx, i in enumerate(r.json()):
         cost = q * price
 
         if (tp == "OPTION"):
+
             cost = 100 * cost
             symparts = sym.split('_')
             dt = symparts[1][0:6]
@@ -136,8 +138,7 @@ for idx, i in enumerate(r.json()):
             ulS = "[" + ulcolor + "]" + "{:.2f}".format(underd['mark']) + "[/" + ulcolor + "]"
 
         else:
-            ulS = ""
-            fdt = ""
+            ulS, fdt = ""
 
         pnl = val - cost
 
@@ -177,7 +178,7 @@ for idx, i in enumerate(r.json()):
         #update totals
         daytotalS = '[' + dtcolor+ ']' + "{:,.2f}".format(daytotal) + '[/' + dtcolor+ ']'
         pltotalS = '[' + plcolor+ ']' + "{:,.2f}".format(pltotal) + '[/' + plcolor+ ']'
-
+        
 table.add_row("     TOTAL", "", "", daytotalS, pltotalS, "", "", "", "[bold]" + "{:,.2f}".format(total) + "[/bold]")
 
 console.print(table)
