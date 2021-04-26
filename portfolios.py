@@ -81,7 +81,7 @@ for idx, i in enumerate(r.json()):
         "{:,.2f}".format(cbal['liquidationValue']),
             diffS,
                 pctS,
-                  "",
+                  "", "",
                     '[bold green]' + "{:.2f}".format(bpow) + '[/bold green]', end_section=True)
             #sym exp daych, pnl, quan price cost mval
 
@@ -138,7 +138,8 @@ for idx, i in enumerate(r.json()):
             ulS = "[" + ulcolor + "]" + "{:.2f}".format(underd['mark']) + "[/" + ulcolor + "]"
 
         else:
-            ulS, fdt = ""
+            ulS = ""
+            fdt = ""
 
         pnl = val - cost
 
