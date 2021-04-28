@@ -3,9 +3,11 @@
 from tda import auth, client
 from rich.console import Console
 from rich.table import Table
+from pprint import pprint
 import configparser
 import json
 import sys
+import os
 
 config = configparser.ConfigParser()
 confdir = os.path.dirname(os.path.realpath(__file__))

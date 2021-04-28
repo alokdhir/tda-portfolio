@@ -77,11 +77,11 @@ for idx, i in enumerate(r.json()):
     total += cbal['liquidationValue']
 
     table.add_row(acct['accountId'],
-        "", "", 
+        "", "", "",
         "{:,.2f}".format(cbal['liquidationValue']),
             diffS,
                 pctS,
-                  "", "",
+                  "",
                     '[bold green]' + "{:.2f}".format(bpow) + '[/bold green]', end_section=True)
             #sym exp daych, pnl, quan price cost mval
 
