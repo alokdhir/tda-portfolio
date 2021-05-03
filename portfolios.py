@@ -33,7 +33,7 @@ r = c.get_accounts(fields=c.Account.Fields.POSITIONS)
 
 assert r.status_code == 200, r.raise_for_status()
 
-console = Console()
+console = Console(width=128)
 table = Table(show_header=True, header_style="yellow")
 table.add_column("Account#")
 table.add_column("", justify="right")
