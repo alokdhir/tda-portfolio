@@ -1,5 +1,5 @@
 [secrets]
-token_path = /path/to/token.pickle
+token_path = /path/to/token.json
 api_key = API-KEY
 
 
