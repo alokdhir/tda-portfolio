@@ -1,7 +1,7 @@
 #!/usr/bin/env python3
 
-from pprint import pprint
 from tda import auth, client
+from pprint import pprint
 from rich.console import Console
 from rich.table import Table
 from datetime import datetime
@@ -18,7 +18,7 @@ config.read(confdir + '/config.ini')
 #td api access
 token_path = config.get('secrets', 'token_path')
 api_key = config.get('secrets', 'api_key')
-redirect_uri = 'http://localhost'
+redirect_uri = config.get('secrets', 'redirect_uri')
 
 try:
     c = auth.client_from_token_file(token_path, api_key)
@@ -27,10 +27,8 @@ except FileNotFoundError:
     with webdriver.Chrome() as driver:
         c = auth.client_from_login_flow(
             driver, api_key, redirect_uri, token_path)
-#logged in! if not, you've been dissed
 
 r = c.get_accounts(fields=c.Account.Fields.POSITIONS)
-
 assert r.status_code == 200, r.raise_for_status()
 
 console = Console(width=128)

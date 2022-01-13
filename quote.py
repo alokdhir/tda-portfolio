@@ -16,8 +16,8 @@ config.read(confdir + '/config.ini')
 
 token_path = config.get('secrets', 'token_path')
 api_key = config.get('secrets', 'api_key')
+redirect_uri = config.get('secrets', 'redirect_uri')
 
-redirect_uri = 'http://localhost'
 try:
     c = auth.client_from_token_file(token_path, api_key)
 except FileNotFoundError:
