@@ -34,9 +34,15 @@ if not symbols:
 console = Console()
 table = Table(show_header=True, header_style="yellow")
 table.add_column("Symbol")
-table.add_column("Price", justify="right", width=10)
-table.add_column("Change", justify="right", width=10)
+table.add_column("Price", justify="right", )
+table.add_column("Change", justify="right")
 table.add_column("% Change", justify="right")
+table.add_column("Low", justify="right")
+table.add_column("High", justify="right")
+table.add_column("% Rng", justify="right")
+table.add_column("P/E", justify="right")
+table.add_column("% Div", justify="right")
+
 
 r = c.get_quotes(symbols)
 assert r.status_code == 200, r.raise_for_status()
@@ -49,9 +55,14 @@ for symbol, f in r.json().items():
     else:
         ccolor = "red"
     change = "[" + ccolor + "]" + "{:.2f}".format(f['netChange']) + "[/" + ccolor + "]"
-    pctchange = "[" + ccolor + "]" + "{:.2%}".format(f['markPercentChangeInDouble']/100) + "[/" + ccolor + "]"
-    table.add_row(symbol, price, change, pctchange)
- 
-console.print(table)
+    pctchange = "[" + ccolor + "]" + "{:.2f}".format(f['regularMarketPercentChangeInDouble']) + "[/" + ccolor + "]"
+    low = str(f['52WkLow'])
+    high = f['52WkHigh']
+    rng = round((f['lastPrice'] / high) * 100)
+    pe = round(f['peRatio'])
+    div = "{:.2f}".format(f['divYield'])
+
+    table.add_row(symbol, price, change, pctchange, low, str(high), str(rng), str(pe), div)
 
 #print(json.dumps(r.json(), indent=4))
+console.print(table)
