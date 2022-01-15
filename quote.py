@@ -44,7 +44,6 @@ def set_color(val, base, hi_good = True):
         else:
             color = 'red'
 
-
     return "[" + color + "]"  + str(val) + "[" + color + "]" 
 
 if not symbols:
