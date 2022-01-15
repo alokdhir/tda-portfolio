@@ -27,6 +27,24 @@ except FileNotFoundError:
             driver, api_key, redirect_uri, token_path)
 
 symbols = sys.argv[1:]
+if '-c' in symbols:
+    print('bloop')
+
+def set_color(val, base, hi_good = True):
+    if hi_good:
+        if (val >= base ):
+            color = 'green'
+        else:
+            color = 'red'
+    else:
+        if (val == 0):
+             color = 'red'
+        elif (val <= base ):
+            color = 'green'
+        else:
+            color = 'red'
+
+    return "[" + color + "]"  + str(val) + "[" + color + "]" 
 
 if not symbols:
     symbols = ['AAPL', 'TSLA']
@@ -48,7 +66,7 @@ r = c.get_quotes(symbols)
 assert r.status_code == 200, r.raise_for_status()
 
 for symbol, f in r.json().items():
-    price = "{:.2f}".format(f['mark'])
+    price = "[" + 'cyan' + "]" + "{:.2f}".format(f['mark']) + "[" + 'cyan' + "]"
     ch = f['netChange']
     if ch > 0:
         ccolor = "green"
@@ -58,9 +76,9 @@ for symbol, f in r.json().items():
     pctchange = "[" + ccolor + "]" + "{:.2f}".format(f['regularMarketPercentChangeInDouble']) + "[/" + ccolor + "]"
     low = str(f['52WkLow'])
     high = f['52WkHigh']
-    rng = round((f['lastPrice'] / high) * 100)
-    pe = round(f['peRatio'])
-    div = "{:.2f}".format(f['divYield'])
+    rng = set_color(round((f['lastPrice'] / high) * 100), 50)
+    pe = set_color(round(f['peRatio']), 20, False)
+    div = set_color(f['divYield'], 3)
 
     table.add_row(symbol, price, change, pctchange, low, str(high), str(rng), str(pe), div)
 
