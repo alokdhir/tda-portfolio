@@ -5,7 +5,7 @@ I spend most of my day in a terminal window, and having to switch to a browser, 
 
 In order to use this, you'll need to follow the instructions at the github link above to authenticate with oauth.
 
-Once done, you need to fill in the 'token path' and the 'api key' vars in the config file example, and save it as config.ini. Do not quote the path/api keys.
+Once done, you need to fill in the 'token path', 'api key', and 'redirect_uri' vars in the config file example, and save it as config.ini. Do not quote the path/api keys. Token path is whatever you want, you'll get the API key and redirect_uri from your "app" settings in your TD developer account.
 
 --
 
