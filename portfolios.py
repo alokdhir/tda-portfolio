@@ -106,6 +106,11 @@ for idx, i in enumerate(r.json()):
         dayplpct = p['currentDayProfitLossPercentage']
         cost = q * price
 
+        if daypl > 0:
+           dcolor = "green"
+        else:
+           dcolor = "red"
+
         if (tp == "OPTION"):
 
             cost = 100 * cost
@@ -136,18 +141,13 @@ for idx, i in enumerate(r.json()):
             ulS = "[" + ulcolor + "]" + "{:.2f}".format(underd['mark']) + "[/" + ulcolor + "]"
 
         else:
-            ulS = ""
+            ulS = "[" + dcolor + "]" + "{:.2f}".format(val/q) + "[/" + dcolor + "]"
             fdt = ""
 
         pnl = val - cost
 
         daytotal += daypl
         pltotal += pnl
-
-        if daypl > 0:
-           dcolor = "green"
-        else:
-           dcolor = "red"
 
         if pnl > 0:
            pcolor = "green"
